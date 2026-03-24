@@ -10,7 +10,7 @@ from typing import Callable, Optional
 PUCE_CHARS = frozenset('•▶→►·◆▸')
 PUCE_FONTS = frozenset(['puces', 'puce', 'bullet', 'zapfdingbats'])
 
-# Titres d'encadrés latéraux Eyrolles
+# Titres d'encadrés latéraux courants dans les livres techniques
 NOTE_LABELS = frozenset([
     'À RETENIR', 'A RETENIR', 'RÉFÉRENCE', 'REFERENCE',
     'CONTEXTE', 'EN PRATIQUE', 'ATTENTION', 'CONSEIL',
@@ -39,7 +39,7 @@ _MONO_KEYWORDS = (
     'courier', 'mono', 'consolas', 'menlo', 'inconsolata',
     'source code', 'fira code', 'jetbrains', 'hack', 'fixed',
     'typewriter', 'lucida console', 'andale', 'ocr',
-    'tt277',    # police PGP Command Line dans les livres Eyrolles
+    'tt277',    # police monospace interne utilisée dans certains livres techniques
 )
 
 

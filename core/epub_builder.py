@@ -302,7 +302,7 @@ class EPUBBuilder:
         """
         import re as _re
 
-        # Jeu de labels Eyrolles étendu (variantes sans accents incluses)
+        # Jeu de labels d'encadrés courants dans les livres techniques (variantes sans accents incluses)
         _NOTE_LABELS_INLINE = frozenset({
             'À RETENIR', 'A RETENIR', 'RETENIR',
             'RÉFÉRENCE', 'REFERENCE',
@@ -313,7 +313,7 @@ class EPUBBuilder:
             'DÉFINITION', 'DEFINITION',
             'RAPPEL', 'NOTE', 'CONSEIL',
         })
-        # Taille de police max pour le corps d'une note Eyrolles (Frutiger 7-10pt)
+        # Taille de police max pour le corps d'une note en encadré (7-10pt)
         _NOTE_SIZE_MAX = 10.5
 
         parts       = []

@@ -23,7 +23,7 @@
 |---|---|
 | 🖼️ **Images CMYK → RGB** | Conversion automatique, indispensable pour les liseuses |
 | 🗂️ **Table des matières** | Générée depuis les signets PDF ou la typographie |
-| 📐 **Mise en page multi-colonnes** | Gestion de la sidebar Eyrolles (gauche / droite) |
+| 📐 **Mise en page multi-colonnes** | Gestion des livres à deux colonnes avec sidebar (gauche / droite) |
 | 🧹 **Nettoyage automatique** | Suppression des en-têtes et pieds de page répétitifs |
 | 📋 **Listes & code** | Listes à puces, blocs `<pre>`, encadrés `<aside>` |
 | 📑 **Structure avancée** | Annexes et index extraits en chapitres EPUB distincts |

@@ -42,7 +42,7 @@ _HELP_HTML = """
   <li><b>Seuil en-tête</b> — pourcentage de hauteur de page en dessous duquel
       un bloc est considéré comme un en-tête répétitif (défaut : 8 %).</li>
   <li><b>Seuil pied de page</b> — même principe depuis le bas (défaut : 93 %).</li>
-  <li><b>Mode sidebar</b> — pour les livres à deux colonnes (type Eyrolles) :
+  <li><b>Mode sidebar</b> — pour les livres à deux colonnes :
     <ul>
       <li><i>Ignorer la sidebar</i> — supprime la colonne de droite (recommandé TTS).</li>
       <li><i>Sidebar en annexe</i> — place la colonne de droite en encadré
@@ -87,7 +87,7 @@ que son PDF source, avec le même nom de base.</p>
       et converties en <code>&lt;ul&gt;&lt;li&gt;</code>.</li>
   <li><b>Blocs de code</b> — polices monospace (Courier, Consolas…) encapsulés
       dans <code>&lt;pre&gt;</code>.</li>
-  <li><b>Encadrés</b> — labels Eyrolles (À RETENIR, CONSEIL, ATTENTION…)
+  <li><b>Encadrés</b> — labels d'encadrés (À RETENIR, CONSEIL, ATTENTION…)
       convertis en <code>&lt;aside class="note"&gt;</code>.</li>
   <li><b>Images CMYK</b> — converties en RGB automatiquement (indispensable
       pour les livres d'imprimerie sous liseuse).</li>
