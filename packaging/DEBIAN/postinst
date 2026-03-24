@@ -1,0 +1,12 @@
+#!/bin/bash
+set -e
+
+# Installe les dépendances Python non disponibles dans les dépôts Debian
+pip3 install \
+    "PyMuPDF>=1.23.0" \
+    "ebooklib>=0.18" \
+    "Pillow>=10.0.0" \
+    --break-system-packages \
+    --quiet
+
+echo "pdf-epubor : dépendances Python installées."

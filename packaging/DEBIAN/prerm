@@ -1,0 +1,7 @@
+#!/bin/bash
+set -e
+
+# Supprime l'entrée du menu des applications au désinstallation
+if command -v update-desktop-database >/dev/null 2>&1; then
+    update-desktop-database /usr/share/applications || true
+fi

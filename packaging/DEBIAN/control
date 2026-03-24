@@ -1,0 +1,22 @@
+Package: pdf-epubor
+Version: 1.3.0
+Architecture: all
+Maintainer: PDF-EPUBOR <https://github.com/nouhailler/pdf-epubor>
+Installed-Size: 640
+Depends: python3 (>= 3.10), python3-pip, python3-pyqt6, python3-pyqt6.qtwebengine
+Homepage: https://github.com/nouhailler/pdf-epubor
+Description: Convertisseur PDF vers EPUB3 avec interface graphique PyQt6
+ Transforme n'importe quel PDF textuel en EPUB3 lisible sur liseuse ou
+ application de lecture, avec détection automatique de la structure
+ (chapitres, titres, listes, encadrés, index, annexes) et prévisualisation
+ intégrée.
+ .
+ Fonctionnalités :
+  * Extraction texte et images via PyMuPDF
+  * Conversion automatique des images CMYK vers RGB
+  * Gestion des mises en page multi-colonnes avec sidebar
+  * Suppression automatique des en-têtes et pieds de page répétitifs
+  * Listes à puces, blocs de code, encadrés <aside>
+  * Annexes et index séparés en chapitres EPUB distincts
+  * Interface PyQt6 avec prévisualisation QWebEngineView
+  * Traitement par lots de plusieurs PDF

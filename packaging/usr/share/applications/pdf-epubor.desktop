@@ -1,0 +1,17 @@
+[Desktop Entry]
+Version=1.3.0
+Name=PDF-EPUBOR
+Name[fr]=PDF-EPUBOR
+GenericName=Convertisseur PDF vers EPUB3
+GenericName[fr]=Convertisseur PDF vers EPUB3
+Comment=Convertit les fichiers PDF en EPUB3 lisibles sur liseuse
+Comment[fr]=Convertit les fichiers PDF en EPUB3 lisibles sur liseuse
+Exec=pdf-epubor %f
+Icon=pdf-epubor
+Terminal=false
+Type=Application
+Categories=Office;Publishing;TextEditor;
+MimeType=application/pdf;
+Keywords=PDF;EPUB;convertisseur;liseuse;livre;ebook;
+StartupNotify=true
+StartupWMClass=PDF-EPUBOR
