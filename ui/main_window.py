@@ -5,7 +5,8 @@ import tempfile
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QHBoxLayout, QVBoxLayout,
     QSplitter, QToolBar, QFileDialog, QMessageBox,
-    QStatusBar, QLabel, QProgressBar
+    QStatusBar, QLabel, QProgressBar,
+    QDialog, QTextBrowser, QDialogButtonBox
 )
 from PyQt6.QtCore import Qt, QThread, pyqtSignal, QSize
 from PyQt6.QtGui import QAction, QIcon, QKeySequence
@@ -17,6 +18,126 @@ from core.pdf_extractor import PDFExtractor
 from core.cleaner import Cleaner
 from core.epub_builder import EPUBBuilder
 from core.exporter import Exporter
+
+
+_HELP_HTML = """
+<html><body style="font-family: sans-serif; font-size: 13px; color: #1a1a1a; margin: 10px;">
+
+<h2 style="color:#2c5282; border-bottom:2px solid #2c5282; padding-bottom:4px;">
+  PDF-EPUBOR — Guide d'utilisation
+</h2>
+
+<h3 style="color:#2c5282;">1. Ouvrir un PDF</h3>
+<p>Cliquez sur <b>📂 Ouvrir PDF</b> (ou <b>Ctrl+O</b>) pour sélectionner un fichier PDF.</p>
+<ul>
+  <li>Les métadonnées (titre, auteur) sont détectées automatiquement et pré-remplies.</li>
+  <li>Un avertissement s'affiche si le PDF est <b>protégé DRM</b> (non convertible)
+      ou s'il s'agit d'un <b>scan sans texte</b> (pas d'OCR en V1).</li>
+</ul>
+
+<h3 style="color:#2c5282;">2. Paramètres de configuration</h3>
+<p>Le panneau gauche expose les réglages de la conversion :</p>
+<ul>
+  <li><b>Titre / Auteur / Langue</b> — métadonnées inscrites dans l'EPUB.</li>
+  <li><b>Seuil en-tête</b> — pourcentage de hauteur de page en dessous duquel
+      un bloc est considéré comme un en-tête répétitif (défaut : 8 %).</li>
+  <li><b>Seuil pied de page</b> — même principe depuis le bas (défaut : 93 %).</li>
+  <li><b>Mode sidebar</b> — pour les livres à deux colonnes (type Eyrolles) :
+    <ul>
+      <li><i>Ignorer la sidebar</i> — supprime la colonne de droite (recommandé TTS).</li>
+      <li><i>Sidebar en annexe</i> — place la colonne de droite en encadré
+          <code>&lt;aside&gt;</code> à la fin du chapitre.</li>
+    </ul>
+  </li>
+  <li><b>Seuil colonne</b> — position X (en % de la largeur) séparant les deux
+      colonnes (défaut : 55 %).</li>
+  <li><b>Mode export</b> — <i>Structuré</i> génère des titres/paragraphes/listes ;
+      <i>Texte brut</i> produit un flux continu (optimal pour les synthèses vocales).</li>
+  <li><b>Export TXT / HTML</b> — génère en plus un fichier texte brut ou HTML
+      dans le même dossier que l'EPUB.</li>
+</ul>
+
+<h3 style="color:#2c5282;">3. Analyser et prévisualiser</h3>
+<p>Cliquez sur <b>🔍 Analyser</b> pour lancer une conversion vers un fichier
+temporaire et afficher le résultat dans le panneau de prévisualisation.</p>
+<p>Utilisez ceci pour tester vos réglages avant l'export final.</p>
+
+<h3 style="color:#2c5282;">4. Exporter en EPUB3</h3>
+<p>Cliquez sur <b>💾 Exporter EPUB</b> (ou <b>Ctrl+S</b>) pour choisir
+l'emplacement de sauvegarde et lancer la conversion complète.</p>
+<p>La progression s'affiche dans la barre du journal (bas de fenêtre).
+Les étapes sont :</p>
+<ol>
+  <li>Extraction du texte et des images (PyMuPDF)</li>
+  <li>Nettoyage — suppression en-têtes, pieds de page, numéros de page</li>
+  <li>Construction de l'EPUB3 — chapitres, CSS, table des matières</li>
+</ol>
+
+<h3 style="color:#2c5282;">5. Traitement par lots</h3>
+<p>Cliquez sur <b>📋 Traitement par lots</b> pour sélectionner plusieurs PDF
+et les convertir en séquence. Chaque EPUB est créé dans le même dossier
+que son PDF source, avec le même nom de base.</p>
+
+<h3 style="color:#2c5282;">6. Ce que l'application détecte automatiquement</h3>
+<ul>
+  <li><b>Table des matières</b> — depuis les signets PDF natifs ; sinon détection
+      typographique par taille de police.</li>
+  <li><b>Titres de chapitres</b> — blocs ≥ 30 pt = H1, ≥ 14 pt gras = H2.</li>
+  <li><b>Listes à puces</b> — polices Puces/Symbol/Wingdings détectées
+      et converties en <code>&lt;ul&gt;&lt;li&gt;</code>.</li>
+  <li><b>Blocs de code</b> — polices monospace (Courier, Consolas…) encapsulés
+      dans <code>&lt;pre&gt;</code>.</li>
+  <li><b>Encadrés</b> — labels Eyrolles (À RETENIR, CONSEIL, ATTENTION…)
+      convertis en <code>&lt;aside class="note"&gt;</code>.</li>
+  <li><b>Images CMYK</b> — converties en RGB automatiquement (indispensable
+      pour les livres d'imprimerie sous liseuse).</li>
+  <li><b>Annexes et index</b> — détectés et séparés en chapitres EPUB distincts.</li>
+</ul>
+
+<h3 style="color:#2c5282;">7. Raccourcis clavier</h3>
+<table style="border-collapse:collapse; width:100%;">
+  <tr style="background:#edf2f7;">
+    <td style="padding:4px 10px;"><b>Ctrl+O</b></td>
+    <td style="padding:4px 10px;">Ouvrir un PDF</td>
+  </tr>
+  <tr>
+    <td style="padding:4px 10px;"><b>Ctrl+S</b></td>
+    <td style="padding:4px 10px;">Exporter en EPUB</td>
+  </tr>
+  <tr style="background:#edf2f7;">
+    <td style="padding:4px 10px;"><b>F1</b></td>
+    <td style="padding:4px 10px;">Afficher ce guide</td>
+  </tr>
+</table>
+
+<br/>
+<p style="color:#718096; font-size:11px;">
+  PDF-EPUBOR v1.0.0 — Python / PyQt6 / PyMuPDF / ebooklib
+</p>
+</body></html>
+"""
+
+
+class HelpDialog(QDialog):
+    """Fenêtre d'aide modale avec le guide d'utilisation."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Aide — Guide d'utilisation")
+        self.resize(680, 600)
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(12, 12, 12, 12)
+        layout.setSpacing(10)
+
+        browser = QTextBrowser()
+        browser.setOpenExternalLinks(True)
+        browser.setHtml(_HELP_HTML)
+        layout.addWidget(browser)
+
+        buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Close)
+        buttons.rejected.connect(self.accept)
+        layout.addWidget(buttons)
 
 
 class ConversionThread(QThread):
@@ -87,6 +208,7 @@ class MainWindow(QMainWindow):
         self.resize(1280, 800)
 
         self._create_toolbar()
+        self._create_menu()
 
         # Widget central
         central = QWidget()
@@ -165,6 +287,39 @@ class MainWindow(QMainWindow):
         act_batch.setStatusTip("Ajouter plusieurs PDF")
         act_batch.triggered.connect(self._batch_add)
         toolbar.addAction(act_batch)
+
+    def _create_menu(self):
+        menu_bar = self.menuBar()
+
+        help_menu = menu_bar.addMenu("&Aide")
+
+        act_guide = QAction("📖 Guide d'utilisation", self)
+        act_guide.setShortcut(QKeySequence.StandardKey.HelpContents)  # F1
+        act_guide.setStatusTip("Afficher le guide d'utilisation")
+        act_guide.triggered.connect(self._show_help)
+        help_menu.addAction(act_guide)
+
+        help_menu.addSeparator()
+
+        act_about = QAction("ℹ️ À propos", self)
+        act_about.setStatusTip("Informations sur PDF-EPUBOR")
+        act_about.triggered.connect(self._show_about)
+        help_menu.addAction(act_about)
+
+    def _show_help(self):
+        dlg = HelpDialog(self)
+        dlg.exec()
+
+    def _show_about(self):
+        QMessageBox.about(
+            self,
+            "À propos de PDF-EPUBOR",
+            "<b>PDF-EPUBOR v1.0.0</b><br/><br/>"
+            "Convertisseur PDF → EPUB3 pour Linux Debian.<br/><br/>"
+            "<b>Dépendances :</b><br/>"
+            "PyQt6 · PyMuPDF · ebooklib · Pillow<br/><br/>"
+            "Appuyez sur <b>F1</b> pour ouvrir le guide complet.",
+        )
 
     def _open_file(self):
         path, _ = QFileDialog.getOpenFileName(
